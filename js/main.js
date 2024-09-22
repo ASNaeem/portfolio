@@ -35,7 +35,7 @@ window.onload = function() {
     const emailInput = document.getElementById('email');
     const messageTypeRadios = document.querySelectorAll('input[name="message_type"]');
 
-    // Update required attribute based on selected message type
+    //Updating attributes based on selected message type
     messageTypeRadios.forEach((radio) => {
         radio.addEventListener('change', function() {
             if (this.value === 'personal') {
@@ -61,6 +61,9 @@ window.onload = function() {
             formData.set('email','');
         }
         //debugging
+        console.log('Form Data:', Object.fromEntries(formData.entries()));
+        var del = "yo";
+        console.log('${del}');
         for(const[key, value] of formData.entries()){
             console.log('${key}: ${value}');
         }
