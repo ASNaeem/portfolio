@@ -5,7 +5,7 @@ const bodyParser = require('body-parser');
 const app = express();
 
 app.use(express.static(path.join(__dirname, 'public')));
-// Connect to MySQL
+//connecting to mysql
 db.connect((err) => {
     if (err) throw err;
     console.log('Connected to MySQL Database');
@@ -14,7 +14,7 @@ db.connect((err) => {
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// Set up the visit counter
+//api for visitor counter
 app.get('/visit', (req, res) => {
   db.query('UPDATE visit_counter SET count = count + 1', err => {
     if (err) {
@@ -31,7 +31,7 @@ app.get('/visit', (req, res) => {
     });
   });
 });
-//Get projects from database
+//api for projects
 app.get('/projects', (req, res) => {
     db.query('SELECT * FROM projects', (err, results) => {
         if (err) throw err;
