@@ -33,7 +33,7 @@ window.onload = function() {
     //setting up form elements
     const form = document.getElementById('contact-guestbook-form');
     const emailInput = document.getElementById('email');
-    const messageTypeRadios = document.querySelectorAll('input[name="messageType"]');
+    const messageTypeRadios = document.querySelectorAll('input[name="message_type"]');
 
     // Update required attribute based on selected message type
     messageTypeRadios.forEach((radio) => {
@@ -57,7 +57,7 @@ window.onload = function() {
     form.addEventListener('submit', function(event) {
         event.preventDefault();
         const formData = new FormData(form);
-        if(!formData.get('emal')){
+        if(!formData.get('email')){
             formData.set('email','');
         }
         //Submit form via fetch API
