@@ -3,7 +3,7 @@ const db = require('./dbConfig');
 const path = require('path');
 const bodyParser = require('body-parser');
 const app = express();
-
+const PORT = process.env.PORT || 3306;
 app.use(express.static(path.join(__dirname, 'public')));
 //connecting to mysql
 db.connect((err) => {
@@ -66,8 +66,8 @@ app.get('/guestbook', (req, res) => {
         res.json(results);
     });
 });
-app.listen(8080, () => {
-    console.log('Server running on http://localhost:8080');
+app.listen(PORT, () => {
+    console.log('Server running on port ${PORT}');
 
 
 });
