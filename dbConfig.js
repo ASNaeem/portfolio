@@ -1,19 +1,13 @@
 const mysql = require('mysql2');
 
-  const db = mysql.createConnection({
-  host: 'junction.proxy.rlwy.net',
-  user: 'root',
-  password: 'SUjHiyjKKBvNdHLNcLrOSqfhQiLRwDBD',
-  database: 'railway',
-  port: 41255
+const db = mysql.createConnection({
+  host: process.env.DB_HOST || 'junction.proxy.rlwy.net',
+  user: process.env.DB_USER || 'root',
+  password: process.env.DB_PASSWORD || 'SUjHiyjKKBvNdHLNcLrOSqfhQiLRwDBD',
+  database: process.env.DB_NAME || 'railway',
+  port: process.env.DB_PORT || 41255
 });
-// const db = mysql.createConnection({
-//   host: 'localhost',
-//   user: 'root',
-//   password: 'nightowl',
-//   database: 'portfolio',
-//   port: 3306
-// });
+
 db.connect(err => {
   if (err) {
     console.error('Error connecting to MySQL: ', err);
