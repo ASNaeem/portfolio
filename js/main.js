@@ -8,7 +8,7 @@ window.onload = function() {
         })
         .catch(err => console.error('Error fetching visit count:', err));
 
-    // Fetch projects
+    //fetching projects
     fetch('/projects')
         .then(response => response.json())
         .then(projects => {
@@ -32,7 +32,7 @@ window.onload = function() {
         })
         .catch(err => console.error('Error fetching projects:', err));
 
-    // Set up form elements
+    //setting up form elements
     const form = document.getElementById('contact-guestbook-form');
     const emailInput = document.getElementById('email');
     const messageTypeRadios = document.querySelectorAll('input[name="messageType"]');
@@ -50,16 +50,16 @@ window.onload = function() {
         });
     });
 
-    // Initial state for email field
+    //initial state for email field based on radio button
     const personalRadio = document.getElementById('personal');
     personalRadio.checked = true; 
     personalRadio.dispatchEvent(new Event('change'));
 
-    // Contact & Guestbook form submission
+    //Contact & Guestbook form submission
     form.addEventListener('submit', function(event) {
         event.preventDefault();
 
-        // Submit form via fetch API
+        //Submit form via fetch API
         fetch(form.action, {
             method: form.method,
             body: new FormData(form),
