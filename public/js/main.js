@@ -5,8 +5,7 @@ window.onload = function() {
         .then(response => response.json())
         .then(data => {
             document.getElementById('visit-count').innerText = data.visitCount;
-        })
-        .catch(err => console.error('Error fetching visit count:', err));
+        }).catch(err => console.error('Error fetching visit count:', err));
 
     //fetching projects
     fetch('/projects')
@@ -29,8 +28,7 @@ window.onload = function() {
                     </div>`;
                 projectsList.innerHTML += projectCard;
             });
-        })
-        .catch(err => console.error('Error fetching projects:', err));
+        }).catch(err => console.error('Error fetching projects:', err));
 
     //setting up form elements
     const form = document.getElementById('contact-guestbook-form');
@@ -96,6 +94,5 @@ function fetchGuestbookEntries() {
                     </div>`;
                 guestbookList.innerHTML += entryCard;
             });
-        })
-        .catch(err => console.error('Error fetching guestbook entries:', err));
+        }).catch(err => console.error('Error fetching guestbook entries:', err));
 }

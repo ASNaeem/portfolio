@@ -3,7 +3,7 @@ const db = require('./dbConfig');
 const path = require('path');
 const bodyParser = require('body-parser');
 const app = express();
-const PORT = process.env.PORT || 3306;
+const PORT = process.env.PORT || 3307;
 app.use(express.static(path.join(__dirname, 'public')));
 //connecting to mysql
 db.connect((err) => {
