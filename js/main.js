@@ -56,11 +56,14 @@ window.onload = function() {
     //Contact & Guestbook form submission
     form.addEventListener('submit', function(event) {
         event.preventDefault();
-
+        const formData = new FormData(form);
+        if(!formData.get('emal')){
+            formData.set('email','');
+        }
         //Submit form via fetch API
-        fetch(form.action, {
-            method: form.method,
-            body: new FormData(form),
+        fetch('/guestbook', {
+            method: 'POST',
+            body: formData,
             headers: {
                 'Accept': 'application/json'
             }
@@ -69,8 +72,12 @@ window.onload = function() {
             if (response.ok) {
                 alert('Thank you! Your message has been sent.');
                 fetchGuestbookEntries();
+            }
+            else{
+                response.json().then(data=>
+                    alert(data.error || 'Submission failed'));
             } 
-        });
+        }).catch(error => console.error('Error:', error));
     });
 };
 function formatTimestamp(timestamp) {
