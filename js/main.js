@@ -60,17 +60,18 @@ window.onload = function() {
         if(!formData.get('email')){
             formData.set('email','');
         }
-        console.log(formData);
+        //debugging
+        for(const[key, value] of formData.entries()){
+            console.log('${key}: ${value}');
+        }
         //Submit form via fetch API
         fetch('/guestbook', {
             method: 'POST',
             body: formData,
-            headers: {
-                'Accept': 'application/json'
-            }
         }).then(response => {
             form.reset();
             if (response.ok) {
+                form.reset();
                 alert('Thank you! Your message has been sent.');
                 fetchGuestbookEntries();
             }
