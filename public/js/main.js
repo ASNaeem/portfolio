@@ -60,6 +60,7 @@ window.onload = function() {
         if(!formData.get('email')){
             formData.set('email','');
         }
+        console.log(formData);
         //Submit form via fetch API
         fetch('/guestbook', {
             method: 'POST',

@@ -44,10 +44,10 @@ app.get('/projects', (req, res) => {
 app.post('/guestbook', (req, res) => {
     const { name, email, message, message_type } = req.body;
 
-    if (!name || !message || !message_type) {
-        console.log(name, message, message_type)
-        return res.status(400).json({ error: 'Name, message, and message type are required.' });
-    }
+    // if (!name || !message || !message_type) {
+    //     console.log(name, email, message, message_type)
+    //     return res.status(400).json({ error: 'Name, message, and message type are required.' });
+    // }
     const emailValue = email ? email : null;
     const query = 'INSERT INTO messages (name, email, message, message_type) VALUES (?, ?, ?, ?)';
     db.query(query, [name, emailValue, message, message_type], (err, result) => {
