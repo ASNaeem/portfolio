@@ -78,4 +78,8 @@ section {
         font-size: 1.5rem; /* Smaller heading font size */
     }
 }
-
+.card-img-top {
+    width: 100%; /* Makes the image responsive */
+    height: 200px; /* Fixed height */
+    object-fit: cover; /* Ensures the image covers the specified area */
+}
