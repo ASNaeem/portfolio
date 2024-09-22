@@ -45,11 +45,12 @@ app.post('/guestbook', (req, res) => {
     const { name, email, message, message_type } = req.body;
 
     if (!name || !message || !message_type) {
+        console.log(name, message, message_type)
         return res.status(400).json({ error: 'Name, message, and message type are required.' });
     }
-
+    const emailValue = email ? email : null;
     const query = 'INSERT INTO messages (name, email, message, message_type) VALUES (?, ?, ?, ?)';
-    db.query(query, [name, email || null, message, message_type], (err, result) => {
+    db.query(query, [name, emailValue, message, message_type], (err, result) => {
         if (err) {
             console.error(err);
             return res.status(500).json({ error: 'Database insertion error' });
