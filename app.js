@@ -2,21 +2,21 @@ const express = require('express');
 const db = require('./dbConfig');
 const path = require('path');
 const app = express();
-const PORT = process.env.PORT || 3307;
+const PORT = process.env.PORT || 3308;
 
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Connecting to MySQL
+//Connecting to MySQL
 db.connect((err) => {
     if (err) throw err;
     console.log('Connected to MySQL Database');
 });
 
-// Middleware
+//Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// API for visitor counter
+//API for visitor counter
 app.get('/visit', (req, res) => {
     db.query('UPDATE visit_counter SET count = count + 1', err => {
         if (err) {
@@ -34,7 +34,7 @@ app.get('/visit', (req, res) => {
     });
 });
 
-// API for projects
+//API for projects
 app.get('/projects', (req, res) => {
     db.query('SELECT * FROM projects', (err, results) => {
         if (err) throw err;
@@ -42,7 +42,7 @@ app.get('/projects', (req, res) => {
     });
 });
 
-// API for messages
+//API for messages
 app.post('/guestbook', (req, res) => {
     const { name, email, message, message_type } = req.body;
 
@@ -64,7 +64,7 @@ app.post('/guestbook', (req, res) => {
     });
 });
 
-// API for guestbook entries
+//API for guestbook entries
 app.get('/guestbook', (req, res) => {
     db.query('SELECT * FROM messages WHERE message_type = "guestbook" ORDER BY mtime DESC', (err, results) => {
         if (err) {
