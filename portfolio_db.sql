@@ -26,7 +26,6 @@ INSERT INTO visit_counter (count) VALUES (0);
 
 INSERT INTO messages (name, email, message, message_type, mtime) VALUES('John Doe', 'john.doe@example.com', 'I would like to know more', 'guestbook', NOW());
 
-
 INSERT INTO projects (title, description, image_url, project_link)
 VALUES ('Culinary Compass', 'Simple Recipe searching app made with HTML, CSS, and JavaScript', 'images/project1.jpg', 'https://asnaeem.github.io/CulinaryCompass/'),
 ('Web Note', 'Simple online note taking app made with HTML, CSS, and JavaScript', 'images/project2.jpg', 'https://asnaeem.github.io/WebNote/'),
