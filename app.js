@@ -7,8 +7,6 @@ const app = express();
 const PORT = process.env.PORT || 3300;
 const HOST = process.env.HOST || 'localhost';
 
-
-
 //Middleware for parsing JSON and URL-encoded data
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
