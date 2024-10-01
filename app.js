@@ -8,17 +8,8 @@ const app = express();
 const PORT = process.env.PORT || 3300;
 const HOST = process.env.HOST || 'localhost';
 
-const allowedOrigins = [
-  'https://asnaeem.github.io/portfolio/',
-  'https://asnaeem.github.io/portfolio'
-];
-// Set up CORS with specific settings
-app.use(cors({
-  origin: allowedOrigins, // Allow requests from this origin
-  methods: ['GET', 'POST'], // Specify the allowed HTTP methods
-  allowedHeaders: ['Content-Type'], // Specify the allowed headers
-  credentials: true // Allow credentials such as cookies, authorization headers, etc.
-}));
+
+app.use(cors());
 
 //Middleware for parsing JSON and URL-encoded data
 app.use(express.json());
