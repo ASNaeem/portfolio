@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require('cors');
 const db = require('./dbConfig');
 const path = require('path');
 require('dotenv').config();  // Load environment variables from .env
@@ -6,6 +7,18 @@ const app = express();
 
 const PORT = process.env.PORT || 3300;
 const HOST = process.env.HOST || 'localhost';
+
+const allowedOrigins = [
+  'https://asnaeem.github.io/portfolio/',
+  'https://asnaeem.github.io/portfolio'
+];
+// Set up CORS with specific settings
+app.use(cors({
+  origin: allowedOrigins, // Allow requests from this origin
+  methods: ['GET', 'POST'], // Specify the allowed HTTP methods
+  allowedHeaders: ['Content-Type'], // Specify the allowed headers
+  credentials: true // Allow credentials such as cookies, authorization headers, etc.
+}));
 
 //Middleware for parsing JSON and URL-encoded data
 app.use(express.json());
@@ -25,7 +38,7 @@ db.getConnection((err) => {
 });
 
 //API for visitor counter
-app.get('/visit', (req, res) => {
+app.get('https://asn-portfolio.up.railway.app/visit', (req, res) => {
     db.query('UPDATE visit_counter SET count = count + 1', (err) => {
         if (err) return res.status(500).send('Error updating visit count');
 
@@ -39,7 +52,7 @@ app.get('/visit', (req, res) => {
 
 
 //API for projects
-app.get('/projects', (req, res) => {
+app.get('https://asn-portfolio.up.railway.app/projects', (req, res) => {
     db.query('SELECT * FROM projects', (err, results) => {
         if (err) return res.status(500).json({ error: 'Database query error' });
         res.json(results);
@@ -47,7 +60,7 @@ app.get('/projects', (req, res) => {
 });
 
 //API for guestbook messages
-app.post('/guestbook', (req, res) => {
+app.post('https://asn-portfolio.up.railway.app/guestbook', (req, res) => {
     console.log(`Received request at ${req.path}`);
     console.log('Headers:', req.headers);
     console.log('Body:', req.body);
@@ -72,7 +85,7 @@ app.post('/guestbook', (req, res) => {
 });
 
 //API for retrieving guestbook entries
-app.get('/guestbook', (req, res) => {
+app.get('https://asn-portfolio.up.railway.app/guestbook', (req, res) => {
     db.query('SELECT * FROM messages WHERE message_type = "guestbook" ORDER BY mtime DESC', (err, results) => {
         if (err) return res.status(500).json({ error: 'Database query error' });
         res.json(results);

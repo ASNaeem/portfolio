@@ -6,7 +6,7 @@ function formatTimestamp(timestamp) {
 
 // Function to fetch and display guestbook entries
 function fetchGuestbookEntries() {
-    fetch('/guestbook')
+    fetch('https://asn-portfolio.up.railway.app/guestbook')
         .then(response => response.json())
         .then(entries => {
             const guestbookList = document.getElementById('guestbook-entries');
@@ -31,7 +31,7 @@ window.onload = function() {
     fetchGuestbookEntries();
 
     // Fetch visit count
-    fetch('/visit')
+    fetch('https://asn-portfolio.up.railway.app/visit')
         .then(response => response.json())
         .then(data => {
             document.getElementById('visit-count').innerText = data.visitCount;
@@ -39,7 +39,7 @@ window.onload = function() {
         .catch(err => console.error('Error fetching visit count:', err));
 
     //Fetching and displaying projects on page load
-    fetch('/projects')
+    fetch('https://asn-portfolio.up.railway.app/projects')
         .then(response => response.json())
         .then(projects => {
             const projectsList = document.getElementById('projects-list');
