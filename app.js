@@ -15,7 +15,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 //Connecting to MySQL
-db.connect((err) => {
+db.getConnection((err) => {
     if (err) {
         console.error('Error connecting to MySQL Database: ', err);
         process.exit(1);  // Exit the process if DB connection fails
