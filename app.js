@@ -38,7 +38,7 @@ db.getConnection((err) => {
 });
 
 //API for visitor counter
-app.get('https://asn-portfolio.up.railway.app/visit', (req, res) => {
+app.get('/visit', (req, res) => {
     db.query('UPDATE visit_counter SET count = count + 1', (err) => {
         if (err) return res.status(500).send('Error updating visit count');
 
@@ -52,7 +52,7 @@ app.get('https://asn-portfolio.up.railway.app/visit', (req, res) => {
 
 
 //API for projects
-app.get('https://asn-portfolio.up.railway.app/projects', (req, res) => {
+app.get('/projects', (req, res) => {
     db.query('SELECT * FROM projects', (err, results) => {
         if (err) return res.status(500).json({ error: 'Database query error' });
         res.json(results);
@@ -60,7 +60,7 @@ app.get('https://asn-portfolio.up.railway.app/projects', (req, res) => {
 });
 
 //API for guestbook messages
-app.post('https://asn-portfolio.up.railway.app/guestbook', (req, res) => {
+app.post('/guestbook', (req, res) => {
     console.log(`Received request at ${req.path}`);
     console.log('Headers:', req.headers);
     console.log('Body:', req.body);
@@ -85,7 +85,7 @@ app.post('https://asn-portfolio.up.railway.app/guestbook', (req, res) => {
 });
 
 //API for retrieving guestbook entries
-app.get('https://asn-portfolio.up.railway.app/guestbook', (req, res) => {
+app.get('/guestbook', (req, res) => {
     db.query('SELECT * FROM messages WHERE message_type = "guestbook" ORDER BY mtime DESC', (err, results) => {
         if (err) return res.status(500).json({ error: 'Database query error' });
         res.json(results);
