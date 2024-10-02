@@ -2,7 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const db = require('./dbConfig');
 const path = require('path');
-require('dotenv').config();  // Load environment variables from .env
+require('dotenv').config();  //loading environment variables from .env
 const app = express();
 
 const PORT = process.env.PORT || 3300;

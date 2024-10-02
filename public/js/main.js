@@ -4,7 +4,7 @@ function formatTimestamp(timestamp) {
     return date.toLocaleString();
 }
 
-// Function to fetch and display guestbook entries
+//Function to fetch and display guestbook entries
 function fetchGuestbookEntries() {
     fetch('https://asn-portfolio.up.railway.app/guestbook')
         .then(response => response.json())
@@ -25,7 +25,7 @@ function fetchGuestbookEntries() {
         .catch(err => console.error('Error fetching guestbook entries:', err));
 }
 
-// Window onload event handler
+//Window onload event handler
 window.onload = function() {
     //Fetching guestbook entries and visit counts
     fetchGuestbookEntries();
