@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 
 const parseResumeMarkdown = () => {
-  const filePath = path.join(__dirname, '../../resume.md');
+  const filePath = path.join(__dirname, '../../public/resume.md');
   const markdown = fs.readFileSync(filePath, 'utf-8');
   
   const resume = {

@@ -16,7 +16,7 @@ app.use(express.static(path.join(__dirname, '../public')));
 
 // Route to serve the raw resume.md file directly
 app.get('/resume.md', (req, res) => {
-  res.sendFile(path.join(__dirname, '../resume.md'));
+  res.sendFile(path.join(__dirname, '../public/resume.md'));
 });
 
 // Mount routes at root level (matching the original MySQL API paths)

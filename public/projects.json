@@ -1,0 +1,20 @@
+[
+  {
+    "title": "Culinary Compass",
+    "description": "Simple Recipe searching app made with HTML, CSS, and JavaScript",
+    "image_url": "images/project1.jpg",
+    "project_link": "https://asnaeem.github.io/CulinaryCompass/"
+  },
+  {
+    "title": "Web Note",
+    "description": "Simple online note taking app made with HTML, CSS, and JavaScript",
+    "image_url": "images/project2.jpg",
+    "project_link": "https://asnaeem.github.io/WebNote/"
+  },
+  {
+    "title": "Store Management System",
+    "description": "Simple StoreMS for windows made with Python and Mysql",
+    "image_url": "images/project3.jpg",
+    "project_link": "https://asnaeem.github.io/StoreMS/"
+  }
+]
