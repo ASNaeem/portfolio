@@ -7,7 +7,7 @@ Computer Science and Engineering graduate with professional experience developin
 
 Experienced in designing RESTful APIs, developing microservices using the Ports and Adapters (Hexagonal) architecture, implementing secure JWT-based authentication/authorization, and building scalable multi-tenant applications.
 
-I also have research experience in machine learning and privacy-preserving AI.
+Research experience in machine learning and privacy-preserving AI complements software engineering expertise.
 
 ## Experience
 ### OonkoO | Junior Backend Developer | April 2025 -- July 2026
