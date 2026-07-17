@@ -1,20 +1,20 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 
-/* CSS variables for light/dark theme — Obsidian & Cyan */
+/* CSS variables for light/dark theme — Obsidian & Sky Blue */
 :root {
     --bg-primary: #eef4f8;
     --bg-secondary: #ffffff;
     --text-primary: #0c1a26;
     --text-secondary: #3d5a70;
-    --text-muted: #607d8b;
+    --text-muted: #4a607a;
     --nav-bg: rgba(238, 244, 248, 0.88);
     
     --card-bg: rgba(255, 255, 255, 0.85);
     --card-border: rgba(59, 130, 246, 0.1);
     
-    --primary-gradient: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-    --primary-color: #2563eb;
-    --primary-hover: #1d4ed8;
+    --primary-gradient: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+    --primary-color: #1d4ed8;
+    --primary-hover: #1e40af;
     
     --success-gradient: linear-gradient(135deg, #10b981 0%, #059669 100%);
     --success-color: #10b981;
@@ -86,6 +86,10 @@ h1, h2, h3, h4, h5, h6, strong {
 
 .text-muted {
     color: var(--text-muted) !important;
+}
+
+.text-primary {
+    color: var(--primary-color) !important;
 }
 
 /* Gradients */
