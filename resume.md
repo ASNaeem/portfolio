@@ -3,7 +3,11 @@ Software Engineer (Backend)
 asaleh.naeem@gmail.com | linkedin.com/in/asalehmn | github.com/ASNaeem
 
 ## Summary
-Computer Science and Engineering graduate with professional experience developing backend systems using Go (Golang), Java, PostgreSQL, Redis, RabbitMQ, and Docker. Experienced in designing RESTful APIs, developing microservices using the Ports and Adapters (Hexagonal) architecture, implementing secure JWT-based authentication/authorization, and building scalable multi-tenant applications. Research experience in machine learning and privacy-preserving AI complements practical backend software engineering expertise.
+Computer Science and Engineering graduate with professional experience developing backend systems using Go (Golang), Java, PostgreSQL, Redis, RabbitMQ, and Docker.
+
+Experienced in designing RESTful APIs, developing microservices using the Ports and Adapters (Hexagonal) architecture, implementing secure JWT-based authentication/authorization, and building scalable multi-tenant applications.
+
+I also have research experience in machine learning and privacy-preserving AI.
 
 ## Experience
 ### OonkoO | Junior Backend Developer | April 2025 -- July 2026

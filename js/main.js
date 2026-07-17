@@ -1,24 +1,42 @@
-// Function to fetch GitHub Profile details dynamically from official API
+// Helper to get custom skill proficiency for the visualizer
+function getSkillProficiency(skillName) {
+    const name = skillName.toLowerCase().trim();
+    if (name.includes('golang') || name === 'go') return 90;
+    if (name.includes('gin') || name === 'rest api' || name.includes('microservices')) return 90;
+    if (name.includes('php') || name.includes('laravel') || name === 'javascript' || name.includes('node') || name.includes('mysql') || name.includes('postgresql') || name.includes('redis') || name === 'git' || name === 'sql') return 85;
+    if (name.includes('java') || name.includes('python') || name.includes('mongodb') || name.includes('docker') || name.includes('grpc') || name.includes('ci/cd') || name.includes('linux')) return 80;
+    if (name.includes('react') || name.includes('spring') || name.includes('aws') || name.includes('elasticsearch') || name.includes('c++')) return 75;
+    if (name === 'c' || name.includes('kubernetes')) return 70;
+    return 75; // Default fallback
+}
+
+// Function to fetch GitHub Profile details dynamically from backend caching proxy
 function loadGitHubProfile() {
-    fetch('https://api.github.com/users/ASNaeem')
+    fetch('/github-stats')
         .then(response => {
-            if (!response.ok) throw new Error('GitHub API rate limit or error');
+            if (!response.ok) throw new Error('GitHub proxy error');
             return response.json();
         })
         .then(data => {
-            document.getElementById('github-repos').innerText = data.public_repos !== undefined ? data.public_repos : '14';
+            if (data.public_repos !== undefined) {
+                document.getElementById('github-repos').innerText = data.public_repos;
+            }
+            const privateReposEl = document.getElementById('github-private-repos');
+            if (privateReposEl && data.total_private_repos !== undefined) {
+                privateReposEl.innerText = data.total_private_repos;
+            }
             if (data.name) {
                 document.getElementById('github-name').innerText = data.name;
             }
             const avatar = document.getElementById('github-avatar');
-            if (avatar) {
+            if (avatar && data.avatar_url) {
                 avatar.src = data.avatar_url;
                 avatar.style.display = 'block';
             }
         })
         .catch(err => {
-            console.warn('GitHub API failed to load stats, using fallback:', err);
-            document.getElementById('github-repos').innerText = '14';
+            console.warn('Failed to load GitHub stats from proxy:', err);
+            // Fallback: We do not override the DOM, leaving the pre-rendered HTML placeholder '25'
         });
 }
 
@@ -27,9 +45,9 @@ function updateGitHubChartTheme(theme) {
     const chart = document.getElementById('github-chart');
     if (!chart) return;
     if (theme === 'dark') {
-        chart.src = 'https://ghchart.rshah.org/8b5cf6/ASNaeem';
+        chart.src = 'https://ghchart.rshah.org/60a5fa/ASNaeem';
     } else {
-        chart.src = 'https://ghchart.rshah.org/4f46e5/ASNaeem';
+        chart.src = 'https://ghchart.rshah.org/3b82f6/ASNaeem';
     }
 }
 
@@ -143,13 +161,16 @@ function loadResumeDetails() {
 }
 
 function renderResumeDOM(data) {
-    // 1. About / Summary
-    document.getElementById('about-text').textContent = data.summary;
+    // 1. About / Summary — split on double newlines to support multi-paragraph summaries
+    const aboutEl = document.getElementById('about-text');
+    const paragraphs = data.summary.split(/\n\n+/).filter(p => p.trim());
+    aboutEl.innerHTML = paragraphs.map(p => `<p class="mb-3">${p.trim()}</p>`).join('');
 
     // 2. Professional Experience
     const experienceList = document.getElementById('experience-list');
     experienceList.innerHTML = '';
     data.experience.forEach(exp => {
+        const cleanDates = exp.dates.replace(/\s*--\s*/g, ' \u2013 ');
         const pointsHtml = exp.points.map(pt => `<li class="mb-2"><i class="fa-solid fa-angle-right text-primary me-2"></i>${pt}</li>`).join('');
         const expCard = `
             <div class="card mb-4 shadow-sm border-start border-primary border-3">
@@ -159,7 +180,7 @@ function renderResumeDOM(data) {
                             <h4 class="card-title h5 mb-1 fw-bold">${exp.company}</h4>
                             <p class="card-subtitle text-primary h6 mb-0 fw-semibold">${exp.role}</p>
                         </div>
-                        <span class="badge bg-secondary p-2 mt-1 mt-md-0">${exp.dates}</span>
+                        <span class="badge bg-secondary p-2 mt-1 mt-md-0">${cleanDates}</span>
                     </div>
                     <ul class="card-text text-muted mb-0 ps-0" style="list-style: none;">
                         ${pointsHtml}
@@ -173,6 +194,7 @@ function renderResumeDOM(data) {
     const educationList = document.getElementById('education-list');
     educationList.innerHTML = '';
     data.education.forEach(edu => {
+        const cleanEduDates = edu.dates.replace(/\s*--\s*/g, ' \u2013 ');
         const eduCard = `
             <div class="card mb-3 shadow-sm border-start border-success border-3">
                 <div class="card-body">
@@ -181,7 +203,7 @@ function renderResumeDOM(data) {
                             <h4 class="card-title h5 mb-1 fw-bold">${edu.school}</h4>
                             <p class="card-subtitle text-muted h6 mb-0">${edu.degree}</p>
                         </div>
-                        <span class="badge bg-secondary p-2 mt-1 mt-md-0">${edu.dates}</span>
+                        <span class="badge bg-secondary p-2 mt-1 mt-md-0">${cleanEduDates}</span>
                     </div>
                     ${edu.location ? `<p class="card-text text-muted mb-0"><small><i class="fa-solid fa-location-dot me-1"></i> ${edu.location}</small></p>` : ''}
                 </div>
@@ -189,20 +211,22 @@ function renderResumeDOM(data) {
         educationList.innerHTML += eduCard;
     });
 
-    // 4. Skills (Rendered as tags pills for rich aesthetics)
+    // 4. Skills (Rendered as badge chip tags grouped by category)
     const skillsList = document.getElementById('skills-list');
     skillsList.innerHTML = '';
     data.skills.forEach(skill => {
-        const tagsHtml = skill.items.split(',').map(item => `
-            <span class="badge bg-soft-primary text-primary-gradient m-1 px-3 py-2 rounded-pill fw-medium">${item.trim()}</span>
-        `).join('');
+        const chipsHtml = skill.items.split(',').map(item => {
+            const name = item.trim();
+            if (!name) return '';
+            return `<span class="skill-chip">${name}</span>`;
+        }).join('');
         const skillCard = `
             <div class="col-md-6 mb-4">
                 <div class="card h-100 shadow-sm border-start border-primary border-3">
                     <div class="card-body">
                         <h5 class="card-title fw-bold mb-3 text-primary-gradient">${skill.category}</h5>
-                        <div class="d-flex flex-wrap">
-                            ${tagsHtml}
+                        <div class="skill-chips-container">
+                            ${chipsHtml}
                         </div>
                     </div>
                 </div>
@@ -278,19 +302,6 @@ window.onload = function() {
     // Load GitHub Profile Stats from official API
     loadGitHubProfile();
 
-    // Fetch visit count (fails gracefully on static hosting)
-    fetch('/visit')
-        .then(response => {
-            if (!response.ok) throw new Error('Visitor API not supported on this host.');
-            return response.json();
-        })
-        .then(data => {
-            document.getElementById('visit-count').innerText = data.visitCount;
-        })
-        .catch(err => {
-            console.warn(err.message);
-            document.getElementById('visit-count').innerText = "Static Dev Mode";
-        });
 
     // Fetch and display projects (falls back to projects.json for static hosting compatibility)
     fetch('/projects')
@@ -303,27 +314,11 @@ window.onload = function() {
             return fetch('projects.json').then(res => res.json());
         })
         .then(projects => {
-            // Dynamically inject tag arrays based on description contents for visual taxonomy
+            // Use explicit tech_tags from JSON; fallback to empty array
             projects.forEach(project => {
-                project.tags = [];
-                const descLower = project.description.toLowerCase();
-                const titleLower = project.title.toLowerCase();
-                if (descLower.includes('javascript') || titleLower.includes('javascript') || descLower.includes('js') || descLower.includes('compass') || descLower.includes('recipe')) {
-                    project.tags.push('JavaScript');
-                }
-                if (descLower.includes('python') || titleLower.includes('python') || descLower.includes('storems')) {
-                    project.tags.push('Python');
-                }
-                if (descLower.includes('mysql') || descLower.includes('database')) {
-                    project.tags.push('MySQL');
-                }
-                if (descLower.includes('html') || descLower.includes('css')) {
-                    project.tags.push('Frontend');
-                }
-                // Fallback tag if empty
-                if (project.tags.length === 0) {
-                    project.tags.push('System');
-                }
+                project.tags = Array.isArray(project.tech_tags) && project.tech_tags.length > 0
+                    ? project.tech_tags
+                    : ['Other'];
             });
 
             // Gather list of unique tags
@@ -347,9 +342,9 @@ window.onload = function() {
                     : projects.filter(p => p.tags.includes(filterTag));
 
                 filteredProjects.forEach(project => {
-                    const projectTagsHtml = project.tags.map(t => `
-                        <span class="badge bg-soft-primary text-primary-gradient me-1">${t}</span>
-                    `).join('');
+                    const projectTagsHtml = project.tags.map(t =>
+                        `<span class="skill-chip me-1 mb-1">${t}</span>`
+                    ).join('');
 
                     const projectCard = `
                         <div class="col-lg-4 col-md-6 mb-4 project-item">
@@ -359,11 +354,9 @@ window.onload = function() {
                                     <div>
                                         <h5 class="card-title fw-bold">${project.title}</h5>
                                         <p class="card-text text-muted mb-3">${project.description}</p>
-                                    </div>
-                                    <div>
                                         <div class="mb-3 d-flex flex-wrap">${projectTagsHtml}</div>
-                                        <a href="${project.project_link}" class="btn btn-primary-gradient w-100 rounded-pill fw-bold" target="_blank">View Project</a>
                                     </div>
+                                    <a href="${project.project_link}" class="btn btn-primary-gradient w-100 rounded-pill fw-bold" target="_blank">View Project</a>
                                 </div>
                             </div>
                         </div>`;
@@ -390,63 +383,97 @@ window.onload = function() {
         })
         .catch(err => console.error('Error fetching projects:', err));
 
-    // 1. Contact Form Handler (Private Messages)
-    const contactForm = document.getElementById('contact-form');
-    if (contactForm) {
-        contactForm.addEventListener('submit', function(event) {
-            event.preventDefault();
-            const formData = new FormData(contactForm);
-            const formObject = {};
-            formData.forEach((value, key) => {
-                formObject[key] = value;
-            });
-
-            // Post to backend database first
-            fetch(contactForm.action, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(formObject),
-            })
-            .then(response => {
-                if (!response.ok) throw new Error('Backend DB unavailable, forwarding to email inbox directly.');
-                return fetch('https://formspree.io/f/xzzpbyad', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(formObject),
-                });
-            })
-            .then(response => {
-                if (response && response.ok) {
-                    alert('Thank you! Your message has been sent successfully.');
-                } else {
-                    alert('Message sent successfully!');
-                }
-                contactForm.reset();
-            })
-            .catch(err => {
-                console.warn(err.message);
-                // Fallback for purely static hosting (submit direct to Formspree)
-                fetch('https://formspree.io/f/xzzpbyad', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(formObject),
-                })
-                .then(res => {
-                    if (res.ok) {
-                        alert('Thank you! Your message has been sent to my inbox.');
-                        contactForm.reset();
-                    } else {
-                        alert('Failed to submit message.');
-                    }
-                })
-                .catch(() => alert('Failed to submit message.'));
+    // 1. Copy Email clipboard functionality
+    const copyEmailBtn = document.getElementById('copy-email-btn');
+    if (copyEmailBtn) {
+        copyEmailBtn.addEventListener('click', () => {
+            const email = copyEmailBtn.getAttribute('data-email');
+            navigator.clipboard.writeText(email).then(() => {
+                const originalHTML = copyEmailBtn.innerHTML;
+                copyEmailBtn.innerHTML = '<i class="fa-solid fa-check me-2"></i>Copied!';
+                copyEmailBtn.classList.remove('btn-primary-gradient');
+                copyEmailBtn.classList.add('btn-success');
+                copyEmailBtn.style.background = 'var(--success-gradient)';
+                
+                setTimeout(() => {
+                    copyEmailBtn.innerHTML = originalHTML;
+                    copyEmailBtn.classList.remove('btn-success');
+                    copyEmailBtn.classList.add('btn-primary-gradient');
+                    copyEmailBtn.style.background = '';
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy email: ', err);
             });
         });
     }
+
+    // Initialize scroll driven reveal triggers
+    initScrollReveal();
+
+    // Initialize floating back to top action triggers
+    initBackToTop();
+
+    // Initialize mobile navbar auto-collapse on link click
+    initNavbarCollapse();
 };
+
+// Function to initialize auto-closing mobile navbar on click
+function initNavbarCollapse() {
+    const navLinks = document.querySelectorAll('.navbar-nav .nav-link');
+    const navbarCollapse = document.getElementById('navbarNav');
+    
+    if (navbarCollapse && typeof bootstrap !== 'undefined') {
+        const bsCollapse = new bootstrap.Collapse(navbarCollapse, { toggle: false });
+        navLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                // Only collapse on mobile/tablet view where the toggler button is visible
+                const toggler = document.querySelector('.navbar-toggler');
+                const isMobile = toggler && window.getComputedStyle(toggler).display !== 'none';
+                if (isMobile && navbarCollapse.classList.contains('show')) {
+                    // Do not close if clicking the theme-toggle button
+                    if (e.target.closest('#theme-toggle')) return;
+                    bsCollapse.hide();
+                }
+            });
+        });
+    }
+}
+
+// Function to initialize scroll driven reveal observer
+function initScrollReveal() {
+    const reveals = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('active');
+            }
+        });
+    }, {
+        threshold: 0.1,
+        rootMargin: "0px 0px -50px 0px"
+    });
+    
+    reveals.forEach(el => observer.observe(el));
+}
+
+// Function to initialize floating back to top button
+function initBackToTop() {
+    const backToTopBtn = document.getElementById('back-to-top');
+    if (!backToTopBtn) return;
+    
+    window.addEventListener('scroll', () => {
+        if (window.scrollY > 300) {
+            backToTopBtn.classList.add('show');
+        } else {
+            backToTopBtn.classList.remove('show');
+        }
+    });
+    
+    backToTopBtn.addEventListener('click', () => {
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+    });
+}
+
