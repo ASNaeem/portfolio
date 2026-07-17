@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/styles.css">
 </head>
-<body>
+<body data-bs-spy="scroll" data-bs-target="#navbarNav" data-bs-root-margin="0px 0px -40%">
     <!-- Floating Navigation Bar -->
     <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
         <div class="container">
@@ -76,7 +76,7 @@
                         Backend & Systems Engineer
                     </h2>
                     <p class="lead text-secondary mb-4 col-lg-10 px-0">
-                        I specialize in building robust backend microservices, high-performance APIs, and scalable distributed architectures with Go, Java, and database-level multi-tenancy.
+                        Focused on building clean, efficient, and reliable APIs and microservices. I specialize in Go (Golang) and Java, designing database schemas, and writing structured, maintainable code.
                     </p>
                     <div class="d-flex flex-wrap justify-content-center justify-content-lg-start gap-3 mb-4">
                         <a href="#contact" class="btn btn-primary-gradient px-4 py-2 rounded-pill">Get In Touch</a>
@@ -96,7 +96,7 @@
                 </div>
                 <div class="col-lg-5 text-center position-relative">
                     <div class="hero-img-blob mx-auto">
-                        <img src="images/profile.jpg" alt="Abu Saleh Muhammad Naeem" class="img-fluid rounded-circle shadow-lg border-gradient">
+                        <img src="images/profile.webp" alt="Abu Saleh Muhammad Naeem" class="img-fluid rounded-circle shadow-lg border-gradient">
                     </div>
                 </div>
             </div>
@@ -106,7 +106,7 @@
     <!-- Main Content Sections -->
     <main class="container my-5">
         <!-- About Section -->
-        <section id="about" class="mb-5 py-4">
+        <section id="about" class="mb-5 py-4 reveal">
             <h2 class="section-title">About Me</h2>
             <div class="row align-items-center">
                 <div class="col-lg-12">
@@ -118,7 +118,7 @@
         </section>
 
         <!-- Professional Experience Section -->
-        <section id="experience" class="mb-5 py-4">
+        <section id="experience" class="mb-5 py-4 reveal">
             <h2 class="section-title">Professional Experience</h2>
             <div id="experience-list">
                 <!-- Loaded dynamically -->
@@ -126,7 +126,7 @@
         </section>
 
         <!-- Education Section -->
-        <section id="education" class="mb-5 py-4">
+        <section id="education" class="mb-5 py-4 reveal">
             <h2 class="section-title">Education</h2>
             <div id="education-list">
                 <!-- Loaded dynamically -->
@@ -134,7 +134,7 @@
         </section>
 
         <!-- Projects Section -->
-        <section id="projects" class="mb-5 py-4">
+        <section id="projects" class="mb-5 py-4 reveal">
             <h2 class="section-title text-center mb-4">Projects</h2>
             <div class="d-flex justify-content-center flex-wrap gap-2 mb-5" id="project-filters">
                 <!-- Loaded dynamically -->
@@ -145,7 +145,7 @@
         </section>
 
         <!-- Skills Section -->
-        <section id="skills" class="mb-5 py-4">
+        <section id="skills" class="mb-5 py-4 reveal">
             <h2 class="section-title">Technical Skills</h2>
             <div class="row" id="skills-list">
                 <!-- Loaded dynamically -->
@@ -153,7 +153,7 @@
         </section>
 
         <!-- Research Section -->
-        <section id="research" class="mb-5 py-4">
+        <section id="research" class="mb-5 py-4 reveal">
             <h2 class="section-title">Research & Publications</h2>
             <div id="research-list" class="row g-3">
                 <!-- Loaded dynamically -->
@@ -161,7 +161,7 @@
         </section>
 
         <!-- Achievements Section -->
-        <section id="achievements" class="mb-5 py-4">
+        <section id="achievements" class="mb-5 py-4 reveal">
             <h2 class="section-title">Achievements</h2>
             <div id="achievements-list" class="row g-3">
                 <!-- Loaded dynamically -->
@@ -169,7 +169,7 @@
         </section>
 
         <!-- GitHub Profile Stats Section -->
-        <section id="github" class="mb-5 py-4">
+        <section id="github" class="mb-5 py-4 reveal">
             <h2 class="section-title">GitHub Profile</h2>
             <div class="row g-4 justify-content-center">
                 <div class="col-lg-10">
@@ -186,17 +186,23 @@
                             </div>
                         </div>
                         <div class="row g-3 justify-content-center mb-4" id="github-stats-grid">
-                            <div class="col-sm-6 col-md-4">
-                                <div class="p-3 bg-soft-primary rounded-3 h-100">
-                                    <h4 class="h2 fw-bold mb-1 text-primary-gradient" id="github-repos">-</h4>
-                                    <span class="text-muted"><small>Public Repositories</small></span>
+                            <div class="col-sm-4 col-md-3">
+                                <div class="p-3 bg-soft-primary rounded-3 h-100 text-center">
+                                    <h4 class="h2 fw-bold mb-1 text-primary-gradient" id="github-repos">25</h4>
+                                    <span class="text-muted"><small>Public Repos</small></span>
+                                </div>
+                            </div>
+                            <div class="col-sm-4 col-md-3">
+                                <div class="p-3 bg-soft-primary rounded-3 h-100 text-center">
+                                    <h4 class="h2 fw-bold mb-1 text-primary-gradient" id="github-private-repos">—</h4>
+                                    <span class="text-muted"><small>Private Repos</small></span>
                                 </div>
                             </div>
                         </div>
                         <div class="p-4 rounded-3 text-start" style="background: var(--bg-primary); border: 1px solid var(--card-border);">
                             <h4 class="h6 fw-bold mb-3 text-muted"><i class="fa-regular fa-calendar-days me-2"></i>Contribution Activity</h4>
                             <div class="table-responsive">
-                                <img id="github-chart" src="https://ghchart.rshah.org/4f46e5/ASNaeem" alt="Naeem's GitHub Contributions Chart" class="img-fluid w-100" style="min-width: 600px;">
+                                <img id="github-chart" src="https://ghchart.rshah.org/3b82f6/ASNaeem" alt="Naeem's GitHub Contributions Chart" class="img-fluid w-100" style="min-width: 600px;">
                             </div>
                             <p class="text-muted mt-2 mb-0"><small>Dynamic grid mapping of public commits, pull requests, and repository activity over the past year.</small></p>
                         </div>
@@ -206,61 +212,59 @@
         </section>
 
         <!-- Contact Section -->
-        <section id="contact" class="mb-5 py-4">
-            <h2 class="section-title">Contact Me</h2>
-            <div class="glass-card p-5 rounded-4 mt-2">
-                <div class="row g-4 align-items-center">
-                    <div class="col-lg-5 pr-lg-5 text-start">
+        <section id="contact" class="mb-5 py-4 reveal">
+            <h2 class="section-title text-center d-block mb-4 mx-auto">Get In Touch</h2>
+            <div class="row justify-content-center">
+                <div class="col-lg-10 text-center">
+                    <div class="glass-card p-5 rounded-4 mt-2">
                         <h3 class="h4 fw-bold mb-3 text-primary-gradient">Let's Connect</h3>
-                        <p class="text-muted mb-4">Have an opportunity, a project proposal, or just want to discuss backend architectures? Feel free to reach out via the form, or connect through the direct channels below.</p>
+                        <p class="text-secondary fs-5 mb-5 col-md-10 mx-auto">
+                            I'm always open to discussing new backend engineering opportunities, microservices, system design challenges, or tech collaborations. I'm based in Dhaka, Bangladesh (GMT+6) but open to remote/relocation roles. Reach out through any of these direct channels:
+                        </p>
                         
-                        <div class="d-flex flex-column gap-3 mb-4">
-                            <div class="d-flex align-items-center gap-3">
-                                <div class="bg-soft-primary p-3 rounded-circle d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
-                                    <i class="fa-regular fa-envelope text-primary" style="font-size: 1.2rem;"></i>
-                                </div>
-                                <div>
-                                    <h4 class="h6 text-muted mb-0"><small>Email Address</small></h4>
-                                    <a href="mailto:md.naeem123@gmail.com" class="text-decoration-none fw-semibold">md.naeem123@gmail.com</a>
-                                </div>
-                            </div>
-                            <div class="d-flex align-items-center gap-3">
-                                <div class="bg-soft-primary p-3 rounded-circle d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
-                                    <i class="fab fa-whatsapp text-primary" style="font-size: 1.25rem;"></i>
-                                </div>
-                                <div>
-                                    <h4 class="h6 text-muted mb-0"><small>WhatsApp Chat</small></h4>
-                                    <a href="https://wa.me/+8801766202327" target="_blank" class="text-decoration-none fw-semibold">+880 1766 202327</a>
+                        <div class="row g-4 justify-content-center">
+                            <!-- Email Card -->
+                            <div class="col-md-6 col-lg-4">
+                                <div class="p-4 rounded-4 contact-channel-card border border-light h-100 d-flex flex-column justify-content-between align-items-center">
+                                    <div class="bg-soft-primary p-3 rounded-circle d-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
+                                        <i class="fa-regular fa-envelope text-primary" style="font-size: 1.5rem;"></i>
+                                    </div>
+                                    <h4 class="h5 fw-bold mb-2">Email</h4>
+                                    <p class="text-muted small mb-3 text-break">asaleh.naeem@gmail.com</p>
+                                    <button id="copy-email-btn" class="btn btn-primary-gradient btn-sm px-4 rounded-pill fw-bold" data-email="asaleh.naeem@gmail.com">
+                                        <i class="fa-regular fa-copy me-2"></i>Copy Email
+                                    </button>
                                 </div>
                             </div>
-                            <div class="d-flex align-items-center gap-3">
-                                <div class="bg-soft-primary p-3 rounded-circle d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
-                                    <i class="fa-solid fa-location-dot text-primary" style="font-size: 1.2rem;"></i>
+
+                            <!-- WhatsApp Card -->
+                            <div class="col-md-6 col-lg-4">
+                                <div class="p-4 rounded-4 contact-channel-card border border-light h-100 d-flex flex-column justify-content-between align-items-center">
+                                    <div class="bg-soft-primary p-3 rounded-circle d-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
+                                        <i class="fab fa-whatsapp text-primary" style="font-size: 1.6rem;"></i>
+                                    </div>
+                                    <h4 class="h5 fw-bold mb-2">WhatsApp</h4>
+                                    <p class="text-muted small mb-3">+880 1766 202327</p>
+                                    <a href="https://wa.me/+8801766202327" target="_blank" class="btn btn-outline-secondary btn-sm px-4 rounded-pill fw-bold">
+                                        <i class="fa-solid fa-paper-plane me-2"></i>Send Message
+                                    </a>
                                 </div>
-                                <div>
-                                    <h4 class="h6 text-muted mb-0"><small>Location</small></h4>
-                                    <span class="fw-semibold">Dhaka, Bangladesh</span>
+                            </div>
+
+                            <!-- LinkedIn Card -->
+                            <div class="col-md-6 col-lg-4">
+                                <div class="p-4 rounded-4 contact-channel-card border border-light h-100 d-flex flex-column justify-content-between align-items-center">
+                                    <div class="bg-soft-primary p-3 rounded-circle d-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
+                                        <i class="fab fa-linkedin-in text-primary" style="font-size: 1.5rem;"></i>
+                                    </div>
+                                    <h4 class="h5 fw-bold mb-2">LinkedIn</h4>
+                                    <p class="text-muted small mb-3">linkedin.com/in/asalehmn</p>
+                                    <a href="https://linkedin.com/in/asalehmn" target="_blank" class="btn btn-outline-secondary btn-sm px-4 rounded-pill fw-bold">
+                                        <i class="fa-solid fa-link me-2"></i>Connect
+                                    </a>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-lg-7 text-start">
-                        <form id="contact-form" method="POST" action="/guestbook">
-                            <input type="hidden" name="message_type" value="personal">
-                            <div class="mb-3">
-                                <label for="contact-name" class="form-label fw-semibold">Name</label>
-                                <input type="text" class="form-control px-3 py-2 rounded-3" id="contact-name" name="name" required placeholder="Your Name">
-                            </div>
-                            <div class="mb-3">
-                                <label for="contact-email" class="form-label fw-semibold">Email Address</label>
-                                <input type="email" class="form-control px-3 py-2 rounded-3" id="contact-email" name="email" required placeholder="name@example.com">
-                            </div>
-                            <div class="mb-3">
-                                <label for="contact-message" class="form-label fw-semibold">Message</label>
-                                <textarea class="form-control px-3 py-2 rounded-3" id="contact-message" rows="4" placeholder="Tell me about your role or project details..." name="message" required></textarea>
-                            </div>
-                            <button type="submit" class="btn btn-primary-gradient px-4 py-2 w-100 rounded-pill fw-bold mt-2">Send Message</button>
-                        </form>
                     </div>
                 </div>
             </div>
@@ -268,11 +272,11 @@
     </main>
 
     <!-- Footer -->
-    <footer class="text-white text-center py-5 mt-5">
+    <footer class="text-center py-5 mt-5">
         <div class="container">
-            <p class="mb-2">Total Visits: <span id="visit-count" class="fw-bold text-primary-gradient px-2">0</span></p>
-            <p class="mb-3 text-muted">&copy; 2026 Abu Saleh Muhammad Naeem. All rights reserved.</p>
-            <div class="footer-icons d-flex justify-content-center gap-3">
+            <p class="fw-semibold mb-1" style="color: var(--text-primary);">Abu Saleh Muhammad Naeem</p>
+            <p class="text-muted small mb-3">Built with Node.js, Express &amp; ☕</p>
+            <div class="footer-icons d-flex justify-content-center gap-3 mb-4">
                 <a href="https://facebook.com/md.naeem123" target="_blank" aria-label="Facebook Profile">
                     <i class="fab fa-facebook-f"></i>
                 </a>
@@ -289,8 +293,14 @@
                     <i class="fab fa-linkedin-in"></i>
                 </a>
             </div>
+            <p class="text-muted mb-0" style="font-size: 0.8rem;">&copy; 2026 Abu Saleh Muhammad Naeem. All rights reserved.</p>
         </div>
     </footer>
+
+    <!-- Back to Top Button -->
+    <button id="back-to-top" aria-label="Back to top">
+        <i class="fa-solid fa-arrow-up"></i>
+    </button>
 
     <!-- Bootstrap Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" defer></script>
