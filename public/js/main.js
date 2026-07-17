@@ -1,41 +1,36 @@
-// Utility function to format timestamps
-function formatTimestamp(timestamp) {
-    const date = new Date(timestamp);
-    return date.toLocaleString();
-}
-
-// Function to fetch and display guestbook entries (fails gracefully on static hosting)
-function fetchGuestbookEntries() {
-    fetch('/guestbook')
+// Function to fetch GitHub Profile details dynamically from official API
+function loadGitHubProfile() {
+    fetch('https://api.github.com/users/ASNaeem')
         .then(response => {
-            if (!response.ok) throw new Error('Guestbook API not supported on this host.');
+            if (!response.ok) throw new Error('GitHub API rate limit or error');
             return response.json();
         })
-        .then(entries => {
-            const guestbookList = document.getElementById('guestbook-entries');
-            guestbookList.innerHTML = ''; // Clear entries
-
-            entries.forEach(entry => {
-                const formattedDate = formatTimestamp(entry.mtime);
-                const entryCard = `
-                    <div class="card mb-3 shadow-sm border-start border-primary border-3">
-                        <div class="card-body py-3">
-                            <div class="d-flex justify-content-between align-items-center mb-1">
-                                <h6 class="card-subtitle fw-bold mb-0 text-dark">${entry.name}</h6>
-                                <small class="text-muted">${formattedDate}</small>
-                            </div>
-                            ${entry.email ? `<p class="mb-2"><small class="text-muted"><i class="fa-regular fa-envelope"></i> ${entry.email}</small></p>` : ''}
-                            <p class="card-text text-muted mb-0">${entry.message}</p>
-                        </div>
-                    </div>`;
-                guestbookList.innerHTML += entryCard;
-            });
+        .then(data => {
+            document.getElementById('github-repos').innerText = data.public_repos !== undefined ? data.public_repos : '14';
+            if (data.name) {
+                document.getElementById('github-name').innerText = data.name;
+            }
+            const avatar = document.getElementById('github-avatar');
+            if (avatar) {
+                avatar.src = data.avatar_url;
+                avatar.style.display = 'block';
+            }
         })
         .catch(err => {
-            console.warn(err.message);
-            const guestbookList = document.getElementById('guestbook-entries');
-            guestbookList.innerHTML = '<p class="text-muted"><small>Guestbook list is only available with a running backend server.</small></p>';
+            console.warn('GitHub API failed to load stats, using fallback:', err);
+            document.getElementById('github-repos').innerText = '14';
         });
+}
+
+// Function to update the GitHub Contribution Chart color theme
+function updateGitHubChartTheme(theme) {
+    const chart = document.getElementById('github-chart');
+    if (!chart) return;
+    if (theme === 'dark') {
+        chart.src = 'https://ghchart.rshah.org/8b5cf6/ASNaeem';
+    } else {
+        chart.src = 'https://ghchart.rshah.org/4f46e5/ASNaeem';
+    }
 }
 
 // Client-side parser for resume.md (allows running statically on GitHub Pages)
@@ -155,18 +150,18 @@ function renderResumeDOM(data) {
     const experienceList = document.getElementById('experience-list');
     experienceList.innerHTML = '';
     data.experience.forEach(exp => {
-        const pointsHtml = exp.points.map(pt => `<li class="mb-1">${pt}</li>`).join('');
+        const pointsHtml = exp.points.map(pt => `<li class="mb-2"><i class="fa-solid fa-angle-right text-primary me-2"></i>${pt}</li>`).join('');
         const expCard = `
-            <div class="card mb-4 shadow-sm border-0 bg-light">
+            <div class="card mb-4 shadow-sm border-start border-primary border-3">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-start flex-wrap mb-2">
                         <div>
-                            <h4 class="card-title h5 mb-1 fw-bold text-dark">${exp.company}</h4>
-                            <p class="card-subtitle text-primary h6 mb-0">${exp.role}</p>
+                            <h4 class="card-title h5 mb-1 fw-bold">${exp.company}</h4>
+                            <p class="card-subtitle text-primary h6 mb-0 fw-semibold">${exp.role}</p>
                         </div>
                         <span class="badge bg-secondary p-2 mt-1 mt-md-0">${exp.dates}</span>
                     </div>
-                    <ul class="card-text text-muted mb-0 ps-3">
+                    <ul class="card-text text-muted mb-0 ps-0" style="list-style: none;">
                         ${pointsHtml}
                     </ul>
                 </div>
@@ -179,31 +174,36 @@ function renderResumeDOM(data) {
     educationList.innerHTML = '';
     data.education.forEach(edu => {
         const eduCard = `
-            <div class="card mb-3 shadow-sm border-0 bg-light">
+            <div class="card mb-3 shadow-sm border-start border-success border-3">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-start flex-wrap mb-2">
                         <div>
-                            <h4 class="card-title h5 mb-1 fw-bold text-dark">${edu.school}</h4>
+                            <h4 class="card-title h5 mb-1 fw-bold">${edu.school}</h4>
                             <p class="card-subtitle text-muted h6 mb-0">${edu.degree}</p>
                         </div>
                         <span class="badge bg-secondary p-2 mt-1 mt-md-0">${edu.dates}</span>
                     </div>
-                    ${edu.location ? `<p class="card-text text-muted mb-0"><small><i class="fa-solid fa-location-dot"></i> ${edu.location}</small></p>` : ''}
+                    ${edu.location ? `<p class="card-text text-muted mb-0"><small><i class="fa-solid fa-location-dot me-1"></i> ${edu.location}</small></p>` : ''}
                 </div>
             </div>`;
         educationList.innerHTML += eduCard;
     });
 
-    // 4. Skills
+    // 4. Skills (Rendered as tags pills for rich aesthetics)
     const skillsList = document.getElementById('skills-list');
     skillsList.innerHTML = '';
     data.skills.forEach(skill => {
+        const tagsHtml = skill.items.split(',').map(item => `
+            <span class="badge bg-soft-primary text-primary-gradient m-1 px-3 py-2 rounded-pill fw-medium">${item.trim()}</span>
+        `).join('');
         const skillCard = `
-            <div class="col-md-6 mb-3">
-                <div class="card h-100 shadow-sm border-0 bg-light">
+            <div class="col-md-6 mb-4">
+                <div class="card h-100 shadow-sm border-start border-primary border-3">
                     <div class="card-body">
-                        <h5 class="card-title fw-bold text-primary mb-2">${skill.category}</h5>
-                        <p class="card-text text-muted">${skill.items}</p>
+                        <h5 class="card-title fw-bold mb-3 text-primary-gradient">${skill.category}</h5>
+                        <div class="d-flex flex-wrap">
+                            ${tagsHtml}
+                        </div>
                     </div>
                 </div>
             </div>`;
@@ -216,10 +216,10 @@ function renderResumeDOM(data) {
     data.research.forEach(res => {
         const resItem = `
             <div class="col-12">
-                <div class="card shadow-sm border-0 bg-light">
+                <div class="card shadow-sm border-start border-primary border-3">
                     <div class="card-body d-flex align-items-start gap-3">
                         <i class="fa-regular fa-file-lines text-primary mt-1" style="font-size: 1.25rem;"></i>
-                        <p class="card-text text-muted mb-0">${res}</p>
+                        <p class="card-text text-muted mb-0 fw-medium">${res}</p>
                     </div>
                 </div>
             </div>`;
@@ -232,10 +232,10 @@ function renderResumeDOM(data) {
     data.achievements.forEach(ach => {
         const achItem = `
             <div class="col-12">
-                <div class="card shadow-sm border-0 bg-light">
+                <div class="card shadow-sm border-start border-warning border-3">
                     <div class="card-body d-flex align-items-start gap-3">
                         <i class="fa-solid fa-trophy text-warning mt-1" style="font-size: 1.25rem;"></i>
-                        <p class="card-text text-muted mb-0">${ach}</p>
+                        <p class="card-text text-muted mb-0 fw-medium">${ach}</p>
                     </div>
                 </div>
             </div>`;
@@ -245,11 +245,38 @@ function renderResumeDOM(data) {
 
 // Window onload event handler
 window.onload = function() {
+    // Theme Toggle Initialization
+    const themeToggleBtn = document.getElementById('theme-toggle');
+    const themeToggleIcon = document.getElementById('theme-toggle-icon');
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+    updateThemeIcon(savedTheme);
+    updateGitHubChartTheme(savedTheme);
+
+    themeToggleBtn.addEventListener('click', () => {
+        const currentTheme = document.documentElement.getAttribute('data-theme');
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', newTheme);
+        localStorage.setItem('theme', newTheme);
+        updateThemeIcon(newTheme);
+        updateGitHubChartTheme(newTheme);
+    });
+
+    function updateThemeIcon(theme) {
+        if (theme === 'dark') {
+            themeToggleIcon.className = 'fa-solid fa-sun';
+            themeToggleBtn.style.color = '#fbbf24';
+        } else {
+            themeToggleIcon.className = 'fa-solid fa-moon';
+            themeToggleBtn.style.color = 'rgba(255,255,255,0.75)';
+        }
+    }
+
     // Load resume sections dynamically from local markdown file
     loadResumeDetails();
 
-    // Fetch and render guestbook entries
-    fetchGuestbookEntries();
+    // Load GitHub Profile Stats from official API
+    loadGitHubProfile();
 
     // Fetch visit count (fails gracefully on static hosting)
     fetch('/visit')
@@ -276,76 +303,114 @@ window.onload = function() {
             return fetch('projects.json').then(res => res.json());
         })
         .then(projects => {
-            const projectsList = document.getElementById('projects-list');
-            projectsList.innerHTML = '';
+            // Dynamically inject tag arrays based on description contents for visual taxonomy
             projects.forEach(project => {
-                const projectCard = `
-                    <div class="col-lg-4 col-md-6 mb-4">
-                        <div class="card h-100 shadow-sm border-0">
-                            <img src="${project.image_url}" class="card-img-top" alt="${project.title}">
-                            <div class="card-body d-flex flex-column justify-content-between">
-                                <div>
-                                    <h5 class="card-title fw-bold text-dark">${project.title}</h5>
-                                    <p class="card-text text-muted mb-3">${project.description}</p>
+                project.tags = [];
+                const descLower = project.description.toLowerCase();
+                const titleLower = project.title.toLowerCase();
+                if (descLower.includes('javascript') || titleLower.includes('javascript') || descLower.includes('js') || descLower.includes('compass') || descLower.includes('recipe')) {
+                    project.tags.push('JavaScript');
+                }
+                if (descLower.includes('python') || titleLower.includes('python') || descLower.includes('storems')) {
+                    project.tags.push('Python');
+                }
+                if (descLower.includes('mysql') || descLower.includes('database')) {
+                    project.tags.push('MySQL');
+                }
+                if (descLower.includes('html') || descLower.includes('css')) {
+                    project.tags.push('Frontend');
+                }
+                // Fallback tag if empty
+                if (project.tags.length === 0) {
+                    project.tags.push('System');
+                }
+            });
+
+            // Gather list of unique tags
+            const uniqueTags = new Set();
+            projects.forEach(p => p.tags.forEach(t => uniqueTags.add(t)));
+
+            // Render filter buttons
+            const filtersContainer = document.getElementById('project-filters');
+            filtersContainer.innerHTML = `<button class="btn btn-sm btn-outline-primary px-3 rounded-pill active" data-filter="all">All</button>`;
+            uniqueTags.forEach(tag => {
+                filtersContainer.innerHTML += `<button class="btn btn-sm btn-outline-primary px-3 rounded-pill" data-filter="${tag}">${tag}</button>`;
+            });
+
+            // Function to render projects list filtered by active tag
+            function renderProjectsList(filterTag) {
+                const projectsList = document.getElementById('projects-list');
+                projectsList.innerHTML = '';
+
+                const filteredProjects = filterTag === 'all' 
+                    ? projects 
+                    : projects.filter(p => p.tags.includes(filterTag));
+
+                filteredProjects.forEach(project => {
+                    const projectTagsHtml = project.tags.map(t => `
+                        <span class="badge bg-soft-primary text-primary-gradient me-1">${t}</span>
+                    `).join('');
+
+                    const projectCard = `
+                        <div class="col-lg-4 col-md-6 mb-4 project-item">
+                            <div class="card h-100 shadow-sm border-0">
+                                <img src="${project.image_url}" class="card-img-top" alt="${project.title}">
+                                <div class="card-body d-flex flex-column justify-content-between">
+                                    <div>
+                                        <h5 class="card-title fw-bold">${project.title}</h5>
+                                        <p class="card-text text-muted mb-3">${project.description}</p>
+                                    </div>
+                                    <div>
+                                        <div class="mb-3 d-flex flex-wrap">${projectTagsHtml}</div>
+                                        <a href="${project.project_link}" class="btn btn-primary-gradient w-100 rounded-pill fw-bold" target="_blank">View Project</a>
+                                    </div>
                                 </div>
-                                <a href="${project.project_link}" class="btn btn-primary w-100" target="_blank">View Project</a>
                             </div>
-                        </div>
-                    </div>`;
-                projectsList.innerHTML += projectCard;
+                        </div>`;
+                    projectsList.innerHTML += projectCard;
+                });
+            }
+
+            // Initial render
+            renderProjectsList('all');
+
+            // Attach event listener for filter button clicks
+            filtersContainer.addEventListener('click', (e) => {
+                const button = e.target.closest('button');
+                if (!button) return;
+
+                // Toggle active styles on buttons
+                filtersContainer.querySelectorAll('button').forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+
+                // Filter projects
+                const filterValue = button.getAttribute('data-filter');
+                renderProjectsList(filterValue);
             });
         })
         .catch(err => console.error('Error fetching projects:', err));
 
-    // Setting up form elements and event listeners after DOM is fully loaded
-    const form = document.getElementById('guestbook-form');
-    const emailInput = document.getElementById('email');
-    const messageTypeRadios = document.querySelectorAll('input[name="message_type"]');
+    // 1. Contact Form Handler (Private Messages)
+    const contactForm = document.getElementById('contact-form');
+    if (contactForm) {
+        contactForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+            const formData = new FormData(contactForm);
+            const formObject = {};
+            formData.forEach((value, key) => {
+                formObject[key] = value;
+            });
 
-    // Updating attributes based on the selected message type
-    messageTypeRadios.forEach((radio) => {
-        radio.addEventListener('change', function() {
-            if (this.value === 'personal') {
-                emailInput.required = true; // Require email for personal messages
-                emailInput.placeholder = "Your email (required)";
-            } else {
-                emailInput.required = false; // Do not require email for guestbook entries
-                emailInput.placeholder = "Your email (optional)";
-            }
-        });
-    });
-
-    // Initial state for the email field based on radio button
-    const personalRadio = document.getElementById('personal');
-    if (personalRadio) {
-        personalRadio.checked = true; 
-        personalRadio.dispatchEvent(new Event('change'));
-    }
-
-    // Form submission handler for contact & guestbook form
-    form.addEventListener('submit', function(event) {
-        event.preventDefault();
-
-        const formData = new FormData(form);
-        const formObject = {};
-        formData.forEach((value, key) => {
-            formObject[key] = value;
-        });
-
-        const isPersonalMessage = formObject.message_type === 'personal';
-
-        fetch(form.action, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(formObject),
-        })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Failed to save message to the database.');
-            }
-            if (isPersonalMessage) {
+            // Post to backend database first
+            fetch(contactForm.action, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formObject),
+            })
+            .then(response => {
+                if (!response.ok) throw new Error('Backend DB unavailable, forwarding to email inbox directly.');
                 return fetch('https://formspree.io/f/xzzpbyad', {
                     method: 'POST',
                     headers: {
@@ -353,32 +418,18 @@ window.onload = function() {
                     },
                     body: JSON.stringify(formObject),
                 });
-            } else {
-                return Promise.resolve();
-            }
-        })
-        .then(response => {
-            if (isPersonalMessage && response) {
-                if (response.ok) {
-                    alert('Thank you! Your message has been sent.');
+            })
+            .then(response => {
+                if (response && response.ok) {
+                    alert('Thank you! Your message has been sent successfully.');
                 } else {
-                    return response.json().then(data => {
-                        alert(data.error || 'Submission failed');
-                    });
+                    alert('Message sent successfully!');
                 }
-            } else {
-                alert('Your message has been saved to the guestbook.');
-            }
-
-            form.reset();
-            personalRadio.checked = true; 
-            personalRadio.dispatchEvent(new Event('change'));
-            fetchGuestbookEntries();
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            // Fallback for purely static hosting (e.g. submit contact requests directly via Formspree without server)
-            if (isPersonalMessage) {
+                contactForm.reset();
+            })
+            .catch(err => {
+                console.warn(err.message);
+                // Fallback for purely static hosting (submit direct to Formspree)
                 fetch('https://formspree.io/f/xzzpbyad', {
                     method: 'POST',
                     headers: {
@@ -388,16 +439,14 @@ window.onload = function() {
                 })
                 .then(res => {
                     if (res.ok) {
-                        alert('Thank you! Your message has been sent directly to form inbox.');
-                        form.reset();
+                        alert('Thank you! Your message has been sent to my inbox.');
+                        contactForm.reset();
                     } else {
                         alert('Failed to submit message.');
                     }
                 })
                 .catch(() => alert('Failed to submit message.'));
-            } else {
-                alert('Guestbook postings are only supported with a running database.');
-            }
+            });
         });
-    });
+    }
 };
